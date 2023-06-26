@@ -67,7 +67,7 @@ edt1.Enabled:= True;
 edt2.Enabled:= True;
 edt3.Enabled:= True;
 edt4.Enabled:= True;
-edt5.Enabled:= True
+edt5.Enabled:= True;
 end;
 
 procedure TForm1.posisiawal;
@@ -135,22 +135,27 @@ end;
 end;
 
 procedure TForm1.btn4Click(Sender: TObject);
+var
+  idHubungan: string;
 begin
-if MessageDlg('APAKAH YAKIN MENGHAPUS DATA INI?',mtWarning,[mbYes,mbNo],0)= mryes then
-begin
-zqry1.SQL.Clear;
-zqry1.SQL.Add(' delete from tabel_hubungan where id_hubungan="'+id+'"');
-zqry1. ExecSQL;
-zqry1.SQL.Clear;
-zqry1.SQL.Add('select * from tabel_hubungan');
-zqry1.Open;
-ShowMessage('DATA BERHASIL DIHAPUS');
-posisiawal;
-end else
-begin
- ShowMessage('DATA BATAL DIHAPUS');
- posisiawal;
-end;
+  idHubungan := zqry1.FieldByName('id_hubungan').AsString;
+
+  if MessageDlg('Apakah Anda yakin menghapus data ini?', mtWarning, [mbYes, mbNo], 0) = mrYes then
+  begin
+    zqry1.SQL.Clear;
+    zqry1.SQL.Add('DELETE FROM tabel_hubungan WHERE id_hubungan = "' + idHubungan + '"');
+    zqry1.ExecSQL;
+    zqry1.SQL.Clear;
+    zqry1.SQL.Add('SELECT * FROM tabel_hubungan');
+    zqry1.Open;
+    ShowMessage('Data berhasil dihapus');
+    posisiawal;
+  end
+  else
+  begin
+    ShowMessage('Penghapusan data dibatalkan');
+    posisiawal;
+  end;
 end;
 
 procedure TForm1.btn5Click(Sender: TObject);
@@ -179,29 +184,35 @@ btn5.Enabled:= True;
 end;
 
 procedure TForm1.btn3Click(Sender: TObject);
+var
+  idHubungan: string;
 begin
-if (edt1.Text= '')or (edt2.Text ='')or(edt3.Text= '')or (edt4.Text ='')or (edt5.Text ='') then
-begin
-  ShowMessage('INPUTAN WAJIB DIISI!');
-end else
-if edt1.Text = zqry1.Fields[1].AsString then
-begin
- ShowMessage('DATA TIDAK ADA PERUBAHAN');
- posisiawal;
-end else
-if edt1.Text = zqry1.Fields[0].AsString then
-begin
- ShowMessage('DATA BERHASIL DIUPDATE!');
-zqry1.SQL.Clear;
-zqry1.SQL.Add('Update tabel_hubungan set id_hubungan= "'+edt1.Text+'",id_ortu="'+edt2.Text+'" where id_hubungan="'+id+'"');
-zqry1. ExecSQL;
+  if (edt1.Text = '') or (edt2.Text = '') or (edt3.Text = '') or (edt4.Text = '') or (edt5.Text = '') then
+  begin
+    ShowMessage('Semua input harus diisi!');
+  end
+  else
+  begin
+    idHubungan := zqry1.FieldByName('id_hubungan').AsString;
+    if edt1.Text = idHubungan then
+    begin
+      zqry1.Edit;
+      zqry1.FieldByName('id_hubungan').AsString := edt1.Text;
+      zqry1.FieldByName('id_siswa').AsString := edt2.Text;
+      zqry1.FieldByName('id_ortu').AsString := edt3.Text;
+      zqry1.FieldByName('status_hubungan').AsString := edt4.Text;
+      zqry1.FieldByName('keterangan').AsString := edt5.Text;
+      zqry1.Post;
 
-zqry1.SQL.Clear;
-zqry1.SQL.Add('select * from tabel_hubungan');
-zqry1.Open;
-
-posisiawal;
-end;
+      ShowMessage('Data berhasil diperbarui!');
+      posisiawal;
+    end
+    else
+    begin
+      ShowMessage('Data tidak ada perubahan');
+      posisiawal;
+    end;
+  end;
 end;
 
 procedure TForm1.btn6Click(Sender: TObject);
