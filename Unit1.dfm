@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 235
-  Top = 117
+  Left = 234
+  Top = 92
   Width = 928
   Height = 481
   Caption = 'Form Hubungan'
